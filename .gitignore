@@ -1,0 +1,10 @@
+!*.*
+.env
+.aws-sam
+*.zip
+node_modules/
+.vscode/
+samconfig.toml
+.DS_Store
+env.json
+.idea
