@@ -89,4 +89,4 @@ class DynamoDBUtil {
   }
 }
 
-module.exports = new DynamoDBUtil();
+module.exports = DynamoDBUtil;
