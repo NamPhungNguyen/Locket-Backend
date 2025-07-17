@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "/opt/*": [
+                "./layers/common/*",
+                "/opt/*"
+            ]
+        },
+        "checkJs": true,
+        "resolveJsonModule": true
+    }
+}
