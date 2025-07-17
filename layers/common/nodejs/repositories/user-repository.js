@@ -1,9 +1,10 @@
+const { UserTable } = require("../variables/env");
 const BaseRepository = require("./base-repository");
 
 class UserRepository extends BaseRepository {
   constructor(dynamoUtil) {
     super(dynamoUtil);
-    this.tableName = "UserTable";
+    this.tableName = UserTable;
     this.partitionKey = "user_id";
   }
 
