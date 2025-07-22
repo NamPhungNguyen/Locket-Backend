@@ -1,47 +1,49 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: My AWS Lambda App with DynamoDB
+Description: An Amazon API Gateway HTTP API and an AWS Lambda function.
 
 Globals:
   Function:
-    Timeout: 10
+    Runtime: nodejs20.x
+    Handler: index.handler
     MemorySize: 128
-    Runtime: nodejs18.x
+    Timeout: 50
+    Layers:
+      - Ref: CommonLayer
     Environment:
       Variables:
         USER_TABLE: !Ref UserTable
 
 Resources:
+  MyApi: 
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      
   UserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: functions/userFunction/handler.handler
-      CodeUri: .
+      CodeUri: functions/api-user
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserTable
       Events:
-        GetUsers:
+        GetUserId:
           Type: Api
           Properties:
-            Path: /users
+            RestApiId: !Ref MyApi
+            Path: /user/{user_id}
             Method: GET
         CreateUser:
           Type: Api
           Properties:
-            Path: /users
-            Method: POST
-        DeleteUser:
-          Type: Api
-          Properties:
-            Path: /users/{user_id}
-            Method: DELETE
+            RestApiId: !Ref MyApi
+            Path: /user
+            Method: POST    
 
   UserTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: UserTable
-      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: user_id
           AttributeType: S
@@ -57,8 +59,39 @@ Resources:
               KeyType: HASH
           Projection:
             ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST      
+
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub ${AWS::StackName}-common-layer
+      Description: Common utilities for Lambda functions
+      ContentUri: layers/common
+      CompatibleRuntimes:
+        - nodejs20.x
+
+  # S3Bucket:
+  #   Type: 'AWS::S3::Bucket'
+  #   Properties:
+  #     BucketName: !Ref S3BucketName
+  #     CorsConfiguration:
+  #       CorsRules:
+  #         - AllowedOrigins:
+  #             - '*'
+  #           AllowedHeaders:
+  #             - '*'
+  #           AllowedMethods:
+  #             - GET
+  #           MaxAge: 3600
+  #     VersioningConfiguration:
+  #       Status: Enabled
+  #     BucketEncryption:
+  #       ServerSideEncryptionConfiguration:
+  #         - ServerSideEncryptionByDefault:
+  #             SSEAlgorithm: aws:kms
+  #             KMSMasterKeyID: !Ref CustomKMSArn      
 
 Outputs:
   ApiUrl:
     Description: "API Gateway endpoint URL"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev/users"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

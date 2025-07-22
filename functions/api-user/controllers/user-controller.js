@@ -14,6 +14,18 @@ const getUserById = async (req, res) => {
     }
 }
 
+const createUser = async (req, res) => {
+    const user = req.body;
+    try {
+        const newUser = await userService.createUser(user);
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 module.exports = {
-    getUserById
+    getUserById,
+    createUser
 }

@@ -11,6 +11,17 @@ const getUserById = async (userId) => {
     }
 }
 
+const createUser = async (user) => {
+    try {
+        const newUser = await userRepository.createUser(user);
+        return newUser;
+    } catch (error) {
+        console.error('Error creating user:', error);
+        throw new Error('Could not create user');
+    }
+}
+
 module.exports = {
-    getUserById
+    getUserById,
+    createUser
 }
