@@ -3,7 +3,7 @@ name: Deploy Node.js Express with SAM
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
