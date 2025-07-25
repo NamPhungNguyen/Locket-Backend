@@ -39,7 +39,9 @@ jobs:
         run: |
           sam deploy \
             --stack-name locket-backend \
+            --resolve-s3 \
+            --s3-prefix locket-backend \
             --region ap-southeast-1 \
             --capabilities CAPABILITY_IAM \
-            --no-confirm-changeset \
+            --confirm-changeset \
             --no-fail-on-empty-changeset
