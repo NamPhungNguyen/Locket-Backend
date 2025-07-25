@@ -43,5 +43,5 @@ jobs:
             --s3-prefix locket-backend \
             --region ap-southeast-1 \
             --capabilities CAPABILITY_IAM \
-            --confirm-changeset \
+            --no-confirm-changeset \
             --no-fail-on-empty-changeset
