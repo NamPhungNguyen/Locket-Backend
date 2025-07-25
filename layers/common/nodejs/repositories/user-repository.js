@@ -1,5 +1,6 @@
 const { UserTable } = require("../variables/env");
 const BaseRepository = require("./base-repository");
+const { v4: uuidv4 } = require('uuid');
 
 class UserRepository extends BaseRepository {
   constructor(dynamoUtil) {
@@ -14,10 +15,14 @@ class UserRepository extends BaseRepository {
   }
 
   async createUser(user) {
-    console.log("Received user:", user);
+    if (!user) {
+      throw new Error("User data is invalid");
+    }
 
-    if (!user || !user.user_id) {
-      throw new Error("User data is invalid or missing user_id");
+    // Nếu chưa có user_id thì tự sinh
+    if (!user.user_id) {
+      user.user_id = uuidv4();
+      console.log("Generated user_id:", user.user_id);
     }
 
     const result = await this.putItemToDB(user);

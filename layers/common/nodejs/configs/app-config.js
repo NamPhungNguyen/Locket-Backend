@@ -22,6 +22,7 @@ function createApp(router, options = {}) {
     // Logging request
     app.use((req, res, next) => {
         Logger.info(`[${dayjs().format()}] ${req.method} ${req.originalUrl}`);
+        Logger.info(`Body: ${JSON.stringify(req.body)}`);
         next();
     });
 

@@ -48,17 +48,21 @@ class BaseRepository {
   }
 
   async putItemToDB(data) {
-    const result = await this.dynamoUtil.putItem({
+    const now = new Date().toISOString();
+    const item = {
+      ...data,
+      created_at: now,
+      updated_at: now,
+    };
+
+    await this.dynamoUtil.putItem({
       TableName: this.tableName,
-      Item: {
-        ...data,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
+      Item: item,
     });
 
-    return result?.Attributes;
+    return item;
   }
+
 
   async updateItemToDB(partitionValue, sortValue = null, updates = {}) {
     const key = {

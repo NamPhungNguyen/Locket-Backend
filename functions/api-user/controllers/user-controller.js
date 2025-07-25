@@ -1,4 +1,5 @@
 const userService = require('../services/user-service');
+const CreateUserInput = require('../inputs/create-user-input');
 
 const getUserById = async (req, res) => {
     const userId = req.params.userId;
@@ -15,15 +16,15 @@ const getUserById = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
-    const user = req.body;
     try {
-        const newUser = await userService.createUser(user);
+        const input = CreateUserInput.fromRequest(req.body);
+        const newUser = await userService.createUser(input);
         res.status(201).json(newUser);
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
 
 module.exports = {
     getUserById,

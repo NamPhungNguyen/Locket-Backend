@@ -1,6 +1,5 @@
 const { userRepository } = require('/opt/nodejs/repositories');
 
-
 const getUserById = async (userId) => {
     try {
         const user = await userRepository.getUserByKey(userId);
